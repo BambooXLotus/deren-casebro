@@ -17,7 +17,7 @@ export const Navbar: React.FC = async () => {
       <MaxWidthWrapper>
         <div className="flex h-14 items-center justify-between border-b border-zinc-200">
           <Link href="/" className="z-40 flex font-semibold">
-            Case<span className="text-cyan-500">Corgi</span>
+            Case<span className="text-tiffany-blue-600">Corgi</span>
           </Link>
           <div className="flex h-full items-center space-x-4">
             {user ? (

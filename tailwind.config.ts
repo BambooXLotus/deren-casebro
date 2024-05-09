@@ -52,6 +52,17 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        "tiffany-blue": {
+          100: "#E0F7F6",
+          200: "#B3ECEB",
+          300: "#80E1E0",
+          400: "#4DD5D4",
+          500: "#0ABAB5", // Base Tiffany Blue
+          600: "#09A39E",
+          700: "#078A84",
+          800: "#066F6A",
+          900: "#045451",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

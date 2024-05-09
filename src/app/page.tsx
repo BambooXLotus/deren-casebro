@@ -1,9 +1,11 @@
-import { Check, Star } from "lucide-react";
+import { ArrowRightIcon, Check, Star } from "lucide-react";
+import Link from "next/link";
 
 import { Icons } from "@/components/icons";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { Phone } from "@/components/phone";
 import { Reviews } from "@/components/reviews";
+import { buttonVariants } from "@/components/ui/button";
 import { UserReview } from "@/components/user-review";
 
 export default function Home() {
@@ -20,7 +22,9 @@ export default function Home() {
               </div>
               <h1 className="relative w-fit text-balance pt-16 text-5xl font-bold !leading-tight tracking-tight text-gray-900 md:text-6xl lg:text-7xl">
                 Your Image on a{" "}
-                <span className="bg-cyan-500 px-2 text-white">Custom</span>{" "}
+                <span className="bg-tiffany-blue-500 px-2 text-white">
+                  Custom
+                </span>{" "}
                 Phone Case
               </h1>
               <p className="max-w-prose text-balance pt-8 text-center text-lg md:text-wrap lg:pr-10 lg:text-left">
@@ -77,11 +81,11 @@ export default function Home() {
                 </div>
                 <div className="flex flex-col items-center justify-between sm:items-start">
                   <div className="flex gap-0.5">
-                    <Star className="h-4 w-4 fill-cyan-500 text-cyan-600" />
-                    <Star className="h-4 w-4 fill-cyan-500 text-cyan-600" />
-                    <Star className="h-4 w-4 fill-cyan-500 text-cyan-600" />
-                    <Star className="h-4 w-4 fill-cyan-500 text-cyan-600" />
-                    <Star className="h-4 w-4 fill-cyan-500 text-cyan-600" />
+                    <Star className="fill-tiffany-blue-500 text-tiffany-blue-600 h-4 w-4" />
+                    <Star className="fill-tiffany-blue-500 text-tiffany-blue-600 h-4 w-4" />
+                    <Star className="fill-tiffany-blue-500 text-tiffany-blue-600 h-4 w-4" />
+                    <Star className="fill-tiffany-blue-500 text-tiffany-blue-600 h-4 w-4" />
+                    <Star className="fill-tiffany-blue-500 text-tiffany-blue-600 h-4 w-4" />
                   </div>
                   <p>
                     <span className="font-semibold">1.250</span> happy customers
@@ -115,7 +119,7 @@ export default function Home() {
               What our{" "}
               <span className="relative px-2">
                 customers{" "}
-                <Icons.underline className="pointer-events-none absolute inset-x-0 -bottom-6 hidden text-cyan-500 sm:block" />
+                <Icons.underline className="text-tiffany-blue-500 pointer-events-none absolute inset-x-0 -bottom-6 hidden sm:block" />
               </span>{" "}
               say
             </h2>
@@ -159,7 +163,7 @@ export default function Home() {
             <div className="mx-w-2xl mx-auto sm:text-center">
               <h2 className="order-1 mt-2 text-balance text-center text-5xl font-bold !leading-tight tracking-tight text-gray-900 md:text-6xl">
                 Upload your photo and get{" "}
-                <span className="relative bg-cyan-600 px-2 text-white">
+                <span className="bg-tiffany-blue-600 relative px-2 text-white">
                   your own case{" "}
                 </span>{" "}
                 now
@@ -174,9 +178,49 @@ export default function Home() {
                 src="/arrow.png"
                 alt="arrow"
               />
-              <div></div>
+              <div className="relative h-80 w-full max-w-sm rounded-xl bg-gray-900/5 ring-inset ring-gray-900/10 md:h-full md:justify-self-end lg:rounded-2xl">
+                <img
+                  className="h-full w-full rounded-md bg-white object-cover shadow-2xl ring-1 ring-gray-900/10"
+                  src="/testimonials/1.jpg"
+                  alt="custom photo"
+                />
+              </div>
+
+              <Phone className="w-60" imgSrc="/testimonials/1.jpg" />
             </div>
           </div>
+
+          <ul className="mx-auto mt-12 w-fit max-w-prose space-y-2 sm:text-lg">
+            <li className="w-fit">
+              <Check className="mr-1.5 inline h-5 w-5 text-green-600" />
+              High-quality silicone material
+            </li>
+            <li className="w-fit">
+              <Check className="mr-1.5 inline h-5 w-5 text-green-600" />
+              Scratch- and fingerprint resistant coating
+            </li>
+            <li className="w-fit">
+              <Check className="mr-1.5 inline h-5 w-5 text-green-600" />
+              Wireless charging compatible
+            </li>
+            <li className="w-fit">
+              <Check className="mr-1.5 inline h-5 w-5 text-green-600" />5 year
+              print warranty
+            </li>
+
+            <div className="flex justify-center">
+              <Link
+                className={buttonVariants({
+                  size: "lg",
+                  className: "mx-auto mt-8",
+                })}
+                href="/configure/upload"
+              >
+                Create your case now{" "}
+                <ArrowRightIcon className="ml-1.5 h-4 w-4" />
+              </Link>
+            </div>
+          </ul>
         </MaxWidthWrapper>
       </section>
     </div>
