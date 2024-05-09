@@ -4,13 +4,13 @@ type UserReviewProps = {
   rating: 1 | 2 | 3 | 4 | 5;
   children?: React.ReactNode;
   name: string;
-  src: string;
+  imgSrc: string;
 };
 
-export const Review: React.FC<UserReviewProps> = ({
+export const UserReview: React.FC<UserReviewProps> = ({
   rating,
   name,
-  src,
+  imgSrc,
   children,
 }) => {
   const stars = Array.from({ length: 5 }, (v, i) => {
@@ -30,7 +30,7 @@ export const Review: React.FC<UserReviewProps> = ({
       <div className="mt-2 flex gap-4">
         <img
           className="h-12 w-12 rounded-full object-cover"
-          src={src}
+          src={imgSrc}
           alt="user"
         />
         <div className="flex flex-col">

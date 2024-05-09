@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { useInView } from "framer-motion";
+
 import { cn } from "@/lib/utils";
 
 import { MaxWidthWrapper } from "./max-width-wrapper";
@@ -16,20 +18,6 @@ const PHONES = [
   "/testimonials/6.jpg",
 ];
 
-function splitArray<T>(array: Array<T>, numParts: number) {
-  const result: Array<Array<T>> = [];
-
-  for (let i = 0; i < array.length; i++) {
-    const index = i % numParts;
-    if (!result[index]) {
-      result[index] = [];
-    }
-    result[index].push(array[i]);
-  }
-
-  return result;
-}
-
 type ReviewColumnProps = {
   reviews: string[];
   className?: string;
@@ -37,7 +25,7 @@ type ReviewColumnProps = {
   msPerPixel?: number;
 };
 
-export const ReviewColumn: React.FC<ReviewColumn> = ({
+export const ReviewColumn: React.FC<ReviewColumnProps> = ({
   reviews,
   className,
   reviewClassName,
@@ -79,10 +67,14 @@ export const ReviewColumn: React.FC<ReviewColumn> = ({
 };
 
 type ReviewProps = {
-  src: string;
+  imgSrc: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
-export const Review: React.FC<ReviewProps> = ({ src, className, ...props }) => {
+export const Review: React.FC<ReviewProps> = ({
+  imgSrc,
+  className,
+  ...props
+}) => {
   const POSSIBLE_ANIMATION_DELAYS = [
     "0s",
     "0.1s",
@@ -106,25 +98,39 @@ export const Review: React.FC<ReviewProps> = ({ src, className, ...props }) => {
       style={{ animationDelay }}
       {...props}
     >
-      <Phone imgSrc={src} />
+      <Phone imgSrc={imgSrc} />
     </div>
   );
 };
 
+function splitArray<T>(array: Array<T>, numParts: number) {
+  const result: Array<Array<T>> = [];
+
+  for (let i = 0; i < array.length; i++) {
+    const index = i % numParts;
+    if (!result[index]) {
+      result[index] = [];
+    }
+    result[index].push(array[i]);
+  }
+
+  return result;
+}
+
 export const ReviewGrid: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  // const isInView = useInView(containerRef, { once: true, amount: 0.4 });
-  // const columns = splitArray(PHONES, 3);
-  // const column1 = columns[0];
-  // const column2 = columns[1];
-  // const column3 = splitArray(columns[2], 2);
+  const isInView = useInView(containerRef, { once: true, amount: 0.4 });
+  const columns = splitArray(PHONES, 3);
+  const column1 = columns[0];
+  const column2 = columns[1];
+  const column3 = splitArray(columns[2], 2);
 
   return (
     <div
       ref={containerRef}
       className="relative -mx-4 mt-16 grid h-[49rem] max-h-[150vh] grid-cols-1 items-start gap-8 overflow-hidden px-4 sm:mt-20 md:grid-cols-2 lg:grid-cols-3"
     >
-      {/* {isInView ? (
+      {isInView ? (
         <>
           <ReviewColumn
             reviews={[...column1, ...column3.flat(), ...column2]}
@@ -150,7 +156,7 @@ export const ReviewGrid: React.FC = () => {
             msPerPixel={10}
           />
         </>
-      ) : null} */}
+      ) : null}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-slate-100" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-100" />
     </div>

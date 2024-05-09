@@ -4,7 +4,7 @@ import { Icons } from "@/components/icons";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { Phone } from "@/components/phone";
 import { Reviews } from "@/components/reviews";
-import { Review } from "@/components/user-review";
+import { UserReview } from "@/components/user-review";
 
 export default function Home() {
   return (
@@ -26,7 +26,7 @@ export default function Home() {
               <p className="max-w-prose text-balance pt-8 text-center text-lg md:text-wrap lg:pr-10 lg:text-left">
                 Capture your favorite memories with your own,{" "}
                 <span className="font-semibold">one-of-one</span> phone case.
-                CaseCobra allows you to protect your memories, not just your
+                CaseCorgi allows you to protect your memories, not just your
                 phone case.
               </p>
 
@@ -119,10 +119,10 @@ export default function Home() {
               </span>{" "}
               say
             </h2>
-            <img src="/snake-2.png" className="order-0 w-24 lg:order-2" />
+            <img src="/corgi-2.png" className="order-0 w-24 lg:order-2" />
           </div>
           <div className="mx-auto grid max-w-2xl grid-cols-1 gap-y-16 px-4 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-            <Review rating={5} name="Jonathan" src="/users/user-1.png">
+            <UserReview rating={5} name="Jonathan" imgSrc="/users/user-1.png">
               <p>
                 &quot;The case feels durable and I even got a compliment on the
                 design. Had the case for two and a half months now and{" "}
@@ -132,8 +132,8 @@ export default function Home() {
                 , on the case I had before, the image started fading into
                 yellow-ish color after a couple weeks. Love it.&quot;
               </p>
-            </Review>
-            <Review rating={4} name="Emilio" src="/users/user-4.jpg">
+            </UserReview>
+            <UserReview rating={4} name="Emilio" imgSrc="/users/user-4.jpg">
               <p>
                 &quot;I usually keep my phone together with my keys in my pocket
                 and that led to some pretty heavy scratch marks on all of my
@@ -144,13 +144,40 @@ export default function Home() {
                 </span>
                 . I dig it.&quot;
               </p>
-            </Review>
+            </UserReview>
           </div>
         </MaxWidthWrapper>
 
         <div className="pt-16">
           <Reviews />
         </div>
+      </section>
+
+      <section>
+        <MaxWidthWrapper className="py-24">
+          <div className="px-6 pb-12 lg:px-8">
+            <div className="mx-w-2xl mx-auto sm:text-center">
+              <h2 className="order-1 mt-2 text-balance text-center text-5xl font-bold !leading-tight tracking-tight text-gray-900 md:text-6xl">
+                Upload your photo and get{" "}
+                <span className="relative bg-cyan-600 px-2 text-white">
+                  your own case{" "}
+                </span>{" "}
+                now
+              </h2>
+            </div>
+          </div>
+
+          <div className="mx-auto max-w-6xl px-6 lg:px-8">
+            <div className="relative flex grid-cols-2 flex-col items-center gap-40 md:grid">
+              <img
+                className="absolute left-1/2 top-[25rem] z-10 -translate-x-1/2 -translate-y-1/2 rotate-90 md:top-1/2 md:rotate-0"
+                src="/arrow.png"
+                alt="arrow"
+              />
+              <div></div>
+            </div>
+          </div>
+        </MaxWidthWrapper>
       </section>
     </div>
   );
