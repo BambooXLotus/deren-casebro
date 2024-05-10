@@ -16,7 +16,7 @@ export default function UploadPage() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number>(45);
   const [isPending, starTransition] = useTransition();
-  const isUploading = true;
+  const isUploading = false;
 
   function handleDropRejected() {}
 
@@ -66,13 +66,23 @@ export default function UploadPage() {
                     />
                   </div>
                 ) : isPending ? (
-                  <div></div>
+                  <div className="flex flex-col items-center">
+                    <p>Redirecting, please wait...</p>
+                  </div>
                 ) : isDragOver ? (
-                  <span></span>
+                  <p>
+                    <span className="font-semibold">Drop file</span> to upload
+                  </p>
                 ) : (
-                  <span></span>
+                  <p>
+                    <span className="font-semibold">Click to upload</span> or
+                    drag and drop
+                  </p>
                 )}
               </div>
+              {isPending ? null : (
+                <p className="text-xs text-zinc-500">PNG, JPG, JPEG</p>
+              )}
             </div>
           )}
         </Dropzone>
