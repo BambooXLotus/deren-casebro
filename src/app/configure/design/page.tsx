@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 
 import { db } from "@/server/db";
 
+import { Designer } from "./designer";
+
 type DesignPageProps = {
   searchParams: Record<string, string | string[] | undefined>;
 };
@@ -14,17 +16,23 @@ const DesignPage: NextPage<DesignPageProps> = async ({ searchParams }) => {
     return notFound();
   }
 
-  const configuration = await db.configuration.findUnique({
+  const config = await db.configuration.findUnique({
     where: { id },
   });
 
-  if (!configuration) {
+  if (!config) {
     return notFound();
   }
 
-  const { imgUrl, width, height } = configuration;
+  const { imgUrl, width, height } = config;
 
-  return <div></div>;
+  return (
+    <Designer
+      configId={config.id}
+      imgDims={{ width, height }}
+      imgUrl={imgUrl}
+    />
+  );
 };
 
 export default DesignPage;
