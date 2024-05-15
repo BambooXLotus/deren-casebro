@@ -1,6 +1,9 @@
+"use client";
+
 import NextImage from "next/image";
 
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { cn } from "@/lib/utils";
 
 type DesignerProps = {
   configId: string;
@@ -28,6 +31,21 @@ export const Designer: React.FC<DesignerProps> = ({
               className="pointer-events-none z-50 select-none"
             />
           </AspectRatio>
+          <div className="absolute inset-0 bottom-px left-[3px] right-[3px] top-px z-40 rounded-[32px] shadow-[0_0_0_99999px_rgba(229,231,235,0.6)]" />
+          <div
+            className={cn(
+              "absolute inset-0  bottom-px left-[3px] right-[3px] rounded-[32px]",
+              `bg-blue-950`,
+            )}
+          />
+        </div>
+        <div className="relative h-full w-full">
+          <NextImage
+            className="pointer-events-none"
+            src={imgUrl}
+            fill
+            alt="your image"
+          />
         </div>
       </div>
     </div>
