@@ -1,9 +1,13 @@
 "use client";
 
 import NextImage from "next/image";
+import { Rnd } from "react-rnd";
 
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+
+import { Handle } from "./handle";
 
 type DesignerProps = {
   configId: string;
@@ -39,14 +43,34 @@ export const Designer: React.FC<DesignerProps> = ({
             )}
           />
         </div>
-        <div className="relative h-full w-full">
-          <NextImage
-            className="pointer-events-none"
-            src={imgUrl}
-            fill
-            alt="your image"
-          />
-        </div>
+        <Rnd
+          className="absolute z-20 border-[3px] border-primary"
+          default={{
+            x: 150,
+            y: 205,
+            height: imgDims.height / 4,
+            width: imgDims.width / 4,
+          }}
+          lockAspectRatio
+          resizeHandleComponent={{
+            bottomRight: <Handle />,
+            bottomLeft: <Handle />,
+            topRight: <Handle />,
+            topLeft: <Handle />,
+          }}
+        >
+          <div className="relative h-full w-full">
+            <NextImage
+              className="pointer-events-none"
+              src={imgUrl}
+              fill
+              alt="your image"
+            />
+          </div>
+        </Rnd>
+      </div>
+      <div className="flex h-[37.5rem] flex-col bg-white">
+        <ScrollArea className="relative flex-1 overflow-auto"></ScrollArea>
       </div>
     </div>
   );

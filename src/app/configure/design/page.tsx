@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { db } from "@/server/db";
 
-import { Designer } from "./designer";
+import { Designer } from "./_components/designer";
 
 type DesignPageProps = {
   searchParams: Record<string, string | string[] | undefined>;
