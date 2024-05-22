@@ -70,7 +70,21 @@ export const Designer: React.FC<DesignerProps> = ({
         </Rnd>
       </div>
       <div className="flex h-[37.5rem] flex-col bg-white">
-        <ScrollArea className="relative flex-1 overflow-auto"></ScrollArea>
+        <ScrollArea className="relative flex-1 overflow-auto">
+          <div
+            className="from white pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-gradient-to-t"
+            aria-hidden
+          />
+          <div className="px-8 pb-12 pt-8">
+            <h2 className="text-3xl font-bold tracking-tight">
+              Customize your case
+            </h2>
+            <div className="my-6 h-px w-full bg-zinc-200" />
+            <div className="relative flex h-full flex-col justify-between pt-4">
+              colors
+            </div>
+          </div>
+        </ScrollArea>
       </div>
     </div>
   );
