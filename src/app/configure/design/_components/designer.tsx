@@ -1,11 +1,25 @@
 "use client";
 
+import { useState } from "react";
+
+import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import NextImage from "next/image";
+import { options } from "prettier-plugin-tailwindcss";
 import { Rnd } from "react-rnd";
 
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { COLORS, MODELS } from "@/lib/option-validator";
 import { cn } from "@/lib/utils";
+import { Radio, RadioGroup } from "@headlessui/react";
 
 import { Handle } from "./handle";
 
@@ -20,6 +34,14 @@ export const Designer: React.FC<DesignerProps> = ({
   imgUrl,
   imgDims,
 }) => {
+  const [options, setOptions] = useState<{
+    color: (typeof COLORS)[number];
+    model: (typeof MODELS.options)[number];
+  }>({
+    color: COLORS[0],
+    model: MODELS.options[0],
+  });
+
   return (
     <div className="relative mb-20 mt-20 grid grid-cols-1 pb-20 lg:grid-cols-3">
       <div className="relative col-span-2 flex h-[37.5rem] w-full max-w-4xl items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
@@ -39,7 +61,7 @@ export const Designer: React.FC<DesignerProps> = ({
           <div
             className={cn(
               "absolute inset-0  bottom-px left-[3px] right-[3px] rounded-[32px]",
-              `bg-blue-950`,
+              `bg-blue-${options.color.tw}`,
             )}
           />
         </div>
@@ -81,7 +103,82 @@ export const Designer: React.FC<DesignerProps> = ({
             </h2>
             <div className="my-6 h-px w-full bg-zinc-200" />
             <div className="relative flex h-full flex-col justify-between pt-4">
-              colors
+              <div className="flex flex-col gap-6">
+                <RadioGroup
+                  value={options.color}
+                  onChange={(value) => {
+                    setOptions((prev) => ({
+                      ...prev,
+                      color: value,
+                    }));
+                  }}
+                >
+                  <Label>Color: {options.color.label}</Label>
+                  <div className="mt-3 flex items-center space-x-3">
+                    {COLORS.map((color) => (
+                      <Radio
+                        className={({ checked }) =>
+                          cn(
+                            "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full border-2 border-transparent p-0.5 focus:outline-none focus:ring-0 active:outline-none active:ring-0",
+                            { [`border-${color.tw}`]: checked },
+                          )
+                        }
+                        key={color.label}
+                        value={color}
+                      >
+                        <span
+                          className={cn(
+                            "h-8 w-8 rounded-full border-black border-opacity-10",
+                            `bg-${color.tw}`,
+                          )}
+                        />
+                      </Radio>
+                    ))}
+                  </div>
+                </RadioGroup>
+                <div className="relative flex w-full flex-col gap-3">
+                  <Label>Model</Label>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        className="w-full justify-between"
+                        variant="outline"
+                        role="combobox"
+                      >
+                        {options.model.label}
+                        <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      {MODELS.options.map((model) => (
+                        <DropdownMenuItem
+                          key={model.label}
+                          className={cn(
+                            "flex cursor-default items-center gap-1 p-1.5 text-sm hover:bg-zinc-100",
+                            {
+                              "bg-zinc-100":
+                                model.label === options.model.label,
+                            },
+                          )}
+                          onClick={() => {
+                            setOptions((prev) => ({ ...prev, model }));
+                          }}
+                        >
+                          <CheckIcon
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              model.label === options.model.label
+                                ? "opacity-100"
+                                : "opacity-0",
+                            )}
+                          />
+                          {model.label}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
             </div>
           </div>
         </ScrollArea>
