@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import { ArrowRightIcon, CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import NextImage from "next/image";
 import { options } from "prettier-plugin-tailwindcss";
 import { Rnd } from "react-rnd";
@@ -18,6 +18,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { COLORS, FINISHES, MATERIALS, MODELS } from "@/lib/option-validator";
+import { BASE_PRICE } from "@/lib/products";
 import { cn, formatPrice } from "@/lib/utils";
 import {
   Description,
@@ -256,6 +257,23 @@ export const Designer: React.FC<DesignerProps> = ({
             </div>
           </div>
         </ScrollArea>
+        <div className="h-16 w-full bg-white px-8">
+          <div className="h-px w-full bg-zinc-200" />
+          <div className="flex h-full w-full items-center justify-end">
+            <div className="flex w-full items-center gap-6">
+              <p className="whitespace-nowrap font-medium">
+                {formatPrice(
+                  (BASE_PRICE + options.finish.price + options.material.price) /
+                    100,
+                )}
+              </p>
+              <Button className="w-full" size="sm">
+                Continue
+                <ArrowRightIcon className="ml-1.5 inline h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
