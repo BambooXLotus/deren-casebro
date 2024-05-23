@@ -101,7 +101,7 @@ export const Designer: React.FC<DesignerProps> = ({
           </div>
         </Rnd>
       </div>
-      <div className="flex h-[37.5rem] flex-col bg-white">
+      <div className="col-span-full flex h-[37.5rem] w-full flex-col bg-white lg:col-span-1">
         <ScrollArea className="relative flex-1 overflow-auto">
           <div
             className="from white pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-gradient-to-t"
