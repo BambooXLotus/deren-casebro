@@ -23,3 +23,7 @@ Built with the Next.js 14 App Router, Postgres, TypeScript, Tailwind & Kinde Aut
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## Current Progress
+
+https://youtu.be/SG82Aqcaaa0?si=zx29PTDTwvpy7rJV&t=19522

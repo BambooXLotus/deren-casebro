@@ -1,33 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import {
+  useRef,
+  useState,
+} from 'react';
 
-import { ArrowRightIcon, CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import NextImage from "next/image";
-import { options } from "prettier-plugin-tailwindcss";
-import { Rnd } from "react-rnd";
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  ChevronsUpDownIcon,
+} from 'lucide-react';
+import NextImage from 'next/image';
+import { useRouter } from 'next/navigation';
+import { Rnd } from 'react-rnd';
 
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Button } from "@/components/ui/button";
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { COLORS, FINISHES, MATERIALS, MODELS } from "@/lib/option-validator";
-import { BASE_PRICE } from "@/lib/products";
-import { cn, formatPrice } from "@/lib/utils";
+} from '@/components/ui/dropdown-menu';
+import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useToast } from '@/components/ui/use-toast';
+import {
+  COLORS,
+  FINISHES,
+  MATERIALS,
+  MODELS,
+} from '@/lib/option-validator';
+import { BASE_PRICE } from '@/lib/products';
+import { useUploadThing } from '@/lib/uploadthing';
+import {
+  base64ToBlob,
+  cn,
+  formatPrice,
+} from '@/lib/utils';
 import {
   Description,
   Label as RadioLabel,
   Radio,
   RadioGroup,
-} from "@headlessui/react";
+} from '@headlessui/react';
+import { useMutation } from '@tanstack/react-query';
 
-import { Handle } from "./handle";
+import {
+  type SaveConfigArgs,
+  saveConfigDb,
+} from '../actions';
+import { Handle } from './handle';
 
 type DesignerProps = {
   configId: string;
@@ -40,6 +63,34 @@ export const Designer: React.FC<DesignerProps> = ({
   imgUrl,
   imgDims,
 }) => {
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const { startUpload } = useUploadThing("imageUploader");
+  const { mutate: mutateConfig } = useMutation({
+    mutationKey: ["save-config"],
+    mutationFn: async (args: SaveConfigArgs) => {
+      await Promise.all([saveConfig(), saveConfigDb(args)]);
+    },
+    onError: () => {
+      toast({
+        title: "Something went wrong",
+        description:
+          "There was a problem saving your config, please try again.",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => {
+      router.push(`/configure/preview?id=${configId}`);
+      toast({
+        title: "Something went wrong",
+        description:
+          "There was a problem saving your config, please try again.",
+        variant: "default",
+      });
+    },
+  });
+
   const [options, setOptions] = useState<{
     color: (typeof COLORS)[number];
     model: (typeof MODELS.options)[number];
@@ -52,19 +103,90 @@ export const Designer: React.FC<DesignerProps> = ({
     finish: FINISHES.options[0],
   });
 
+  const [renderDims, setRenderDims] = useState({
+    width: imgDims.width / 4,
+    height: imgDims.height / 4,
+  });
+
+  const [renderPosition, setRenderPosition] = useState({
+    x: 150,
+    y: 205,
+  });
+
+  const phoneCaseRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  async function saveConfig() {
+    try {
+      const {
+        left: caseLeft,
+        top: caseTop,
+        width,
+        height,
+      } = phoneCaseRef.current!.getBoundingClientRect();
+
+      const { left: containerLeft, top: containerTop } =
+        containerRef.current!.getBoundingClientRect();
+
+      const leftOffset = caseLeft - containerLeft;
+      const topOffset = caseTop - containerTop;
+
+      const actualX = renderPosition.x - leftOffset;
+      const actualY = renderPosition.y - topOffset;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+
+      const userImg = new Image();
+      userImg.crossOrigin = "anonymous";
+      userImg.src = imgUrl;
+
+      await new Promise((resolove) => (userImg.onload = resolove));
+
+      ctx?.drawImage(
+        userImg,
+        actualX,
+        actualY,
+        renderDims.width,
+        renderDims.height,
+      );
+
+      const base64 = canvas.toDataURL();
+      const base64Data = base64.split(",")[1];
+
+      const blob = base64ToBlob(base64Data!, "image/png");
+      const file = new File([blob], "filename.png", { type: "image/png" });
+
+      await startUpload([file], { configId });
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+        description:
+          "There was a problem saving your config, please try again.",
+        variant: "destructive",
+      });
+    }
+  }
+
   return (
     <div className="relative mb-20 mt-20 grid grid-cols-1 pb-20 lg:grid-cols-3">
-      <div className="relative col-span-2 flex h-[37.5rem] w-full max-w-4xl items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+      <div
+        className="relative col-span-2 flex h-[37.5rem] w-full max-w-4xl items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        ref={containerRef}
+      >
         <div className="pointer-events-none relative aspect-[896/1831] w-60 bg-opacity-50">
           <AspectRatio
-            ratio={896 / 1831}
             className="pointer-events-none relative z-50 aspect-[896/1831] w-full"
+            ref={phoneCaseRef}
+            ratio={896 / 1831}
           >
             <NextImage
+              className="pointer-events-none z-50 select-none"
               fill
               alt="phone image"
               src="/phone-template.png"
-              className="pointer-events-none z-50 select-none"
             />
           </AspectRatio>
           <div className="absolute inset-0 bottom-px left-[3px] right-[3px] top-px z-40 rounded-[32px] shadow-[0_0_0_99999px_rgba(229,231,235,0.6)]" />
@@ -89,6 +211,18 @@ export const Designer: React.FC<DesignerProps> = ({
             bottomLeft: <Handle />,
             topRight: <Handle />,
             topLeft: <Handle />,
+          }}
+          onResizeStop={(_, __, ref, ___, { x, y }) => {
+            setRenderDims({
+              height: parseInt(ref.style.height.slice(0, -2)),
+              width: parseInt(ref.style.width.slice(0, -2)),
+            });
+
+            setRenderPosition({ x, y });
+          }}
+          onDragStop={(_, data) => {
+            const { x, y } = data;
+            setRenderPosition({ x, y });
           }}
         >
           <div className="relative h-full w-full">
@@ -267,7 +401,19 @@ export const Designer: React.FC<DesignerProps> = ({
                     100,
                 )}
               </p>
-              <Button className="w-full" size="sm">
+              <Button
+                className="w-full"
+                size="sm"
+                onClick={() =>
+                  mutateConfig({
+                    configId,
+                    color: options.color.value,
+                    finish: options.finish.value,
+                    material: options.material.value,
+                    model: options.model.value,
+                  })
+                }
+              >
                 Continue
                 <ArrowRightIcon className="ml-1.5 inline h-4 w-4" />
               </Button>

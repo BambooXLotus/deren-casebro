@@ -1,10 +1,11 @@
-import "@/styles/globals.css";
+import '@/styles/globals.css';
 
-import { Inter } from "next/font/google";
+import { Inter } from 'next/font/google';
 
-import { Footer } from "@/components/footer";
-import { Navbar } from "@/components/navbar";
-import { Toaster } from "@/components/ui/toaster";
+import { Footer } from '@/components/footer';
+import { Navbar } from '@/components/navbar';
+import Providers from '@/components/providers';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,7 +28,9 @@ export default function RootLayout({
       <body className={`font-sans ${inter.variable}`}>
         <Navbar />
         <main className="grainy-light flex min-h-[calc(100vh-3.5rem-1px)] flex-col">
-          <div className="flex h-full flex-1 flex-col">{children}</div>
+          <div className="flex h-full flex-1 flex-col">
+            <Providers>{children}</Providers>
+          </div>
           <Footer />
         </main>
         <Toaster />
