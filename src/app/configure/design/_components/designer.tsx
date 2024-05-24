@@ -1,56 +1,37 @@
 "use client";
 
-import {
-  useRef,
-  useState,
-} from 'react';
+import { useRef, useState } from "react";
 
-import {
-  ArrowRightIcon,
-  CheckIcon,
-  ChevronsUpDownIcon,
-} from 'lucide-react';
-import NextImage from 'next/image';
-import { useRouter } from 'next/navigation';
-import { Rnd } from 'react-rnd';
+import { ArrowRightIcon, CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import NextImage from "next/image";
+import { useRouter } from "next/navigation";
+import { Rnd } from "react-rnd";
 
-import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { Button } from '@/components/ui/button';
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useToast } from '@/components/ui/use-toast';
-import {
-  COLORS,
-  FINISHES,
-  MATERIALS,
-  MODELS,
-} from '@/lib/option-validator';
-import { BASE_PRICE } from '@/lib/products';
-import { useUploadThing } from '@/lib/uploadthing';
-import {
-  base64ToBlob,
-  cn,
-  formatPrice,
-} from '@/lib/utils';
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/components/ui/use-toast";
+import { COLORS, FINISHES, MATERIALS, MODELS } from "@/lib/option-validator";
+import { BASE_PRICE } from "@/lib/products";
+import { useUploadThing } from "@/lib/uploadthing";
+import { base64ToBlob, cn, formatPrice } from "@/lib/utils";
 import {
   Description,
   Label as RadioLabel,
   Radio,
   RadioGroup,
-} from '@headlessui/react';
-import { useMutation } from '@tanstack/react-query';
+} from "@headlessui/react";
+import { useMutation } from "@tanstack/react-query";
 
-import {
-  type SaveConfigArgs,
-  saveConfigDb,
-} from '../actions';
-import { Handle } from './handle';
+import { type SaveConfigArgs, saveConfigDb } from "../actions";
+import { Handle } from "./handle";
 
 type DesignerProps = {
   configId: string;
@@ -67,7 +48,7 @@ export const Designer: React.FC<DesignerProps> = ({
   const router = useRouter();
 
   const { startUpload } = useUploadThing("imageUploader");
-  const { mutate: mutateConfig } = useMutation({
+  const { mutate: mutateConfig, isPending } = useMutation({
     mutationKey: ["save-config"],
     mutationFn: async (args: SaveConfigArgs) => {
       await Promise.all([saveConfig(), saveConfigDb(args)]);
@@ -82,12 +63,6 @@ export const Designer: React.FC<DesignerProps> = ({
     },
     onSuccess: () => {
       router.push(`/configure/preview?id=${configId}`);
-      toast({
-        title: "Something went wrong",
-        description:
-          "There was a problem saving your config, please try again.",
-        variant: "default",
-      });
     },
   });
 
@@ -404,6 +379,8 @@ export const Designer: React.FC<DesignerProps> = ({
               <Button
                 className="w-full"
                 size="sm"
+                disabled={isPending}
+                isLoading={isPending}
                 onClick={() =>
                   mutateConfig({
                     configId,

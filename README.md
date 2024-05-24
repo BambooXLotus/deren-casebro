@@ -26,4 +26,4 @@ Built with the Next.js 14 App Router, Postgres, TypeScript, Tailwind & Kinde Aut
 
 ## Current Progress
 
-https://youtu.be/SG82Aqcaaa0?si=zx29PTDTwvpy7rJV&t=19522
+https://youtu.be/SG82Aqcaaa0?si=1AHCXydCAr32zif-&t=29200

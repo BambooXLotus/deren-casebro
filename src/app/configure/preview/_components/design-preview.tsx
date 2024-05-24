@@ -3,20 +3,28 @@
 import { useEffect, useState } from "react";
 
 import { ArrowRightIcon, CheckIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import Confetti from "react-dom-confetti";
 
 import { Phone } from "@/components/phone";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { COLORS, MODELS } from "@/lib/option-validator";
 import { BASE_PRICE, PRODUCT_PRICES } from "@/lib/products";
 import { cn, formatPrice } from "@/lib/utils";
 import { type Configuration } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
+
+import { createCheckoutSession } from "../actions";
 
 type DesignPreviewProps = {
   config: Configuration;
 };
 
 export const DesignPreview: React.FC<DesignPreviewProps> = ({ config }) => {
+  const router = useRouter();
+  const { toast } = useToast();
+
   const [suprise, setSuprise] = useState(false);
   useEffect(() => setSuprise(true), []);
 
@@ -30,6 +38,25 @@ export const DesignPreview: React.FC<DesignPreviewProps> = ({ config }) => {
   if (material === "polycarbonate")
     totalPrice += PRODUCT_PRICES.material.polycarbonate;
   if (finish === "textured") totalPrice += PRODUCT_PRICES.finish.textured;
+
+  const { mutate: createPaymentSession, isPending } = useMutation({
+    mutationKey: ["get-checkout-session"],
+    mutationFn: createCheckoutSession,
+    onSuccess: ({ url }) => {
+      if (url) {
+        router.push(url);
+      } else {
+        throw new Error("Unable to retrieve payment URL!");
+      }
+    },
+    onError: () => {
+      toast({
+        title: "Something went wrong",
+        description: "There was an error on our end. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   return (
     <>
@@ -110,7 +137,12 @@ export const DesignPreview: React.FC<DesignPreviewProps> = ({ config }) => {
               </div>
             </div>
             <div className="mt-8 flex justify-end pb-12">
-              <Button className="px-4 sm:px-6 lg:px-8">
+              <Button
+                className="px-4 sm:px-6 lg:px-8"
+                isLoading={isPending}
+                disabled={isPending}
+                onClick={() => createPaymentSession({ configId: config.id })}
+              >
                 Check out <ArrowRightIcon className="ml-1.5 inline h-4 w-4" />
               </Button>
             </div>
