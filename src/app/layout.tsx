@@ -1,16 +1,13 @@
-import '@/styles/globals.css';
+import "@/styles/globals.css";
 
-import { Inter } from 'next/font/google';
+import { Recursive } from "next/font/google";
 
-import { Footer } from '@/components/footer';
-import { Navbar } from '@/components/navbar';
-import Providers from '@/components/providers';
-import { Toaster } from '@/components/ui/toaster';
+import { Footer } from "@/components/footer";
+import { Navbar } from "@/components/navbar";
+import Providers from "@/components/providers";
+import { Toaster } from "@/components/ui/toaster";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+const recursive = Recursive({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Create T3 App",
@@ -25,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body className={recursive.className}>
         <Navbar />
         <main className="grainy-light flex min-h-[calc(100vh-3.5rem-1px)] flex-col">
           <div className="flex h-full flex-1 flex-col">
