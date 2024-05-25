@@ -6,12 +6,14 @@ import { ArrowRightIcon, CheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Confetti from "react-dom-confetti";
 
+import { LoginModal } from "@/components/modals/login-modal";
 import { Phone } from "@/components/phone";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { COLORS, MODELS } from "@/lib/option-validator";
 import { BASE_PRICE, PRODUCT_PRICES } from "@/lib/products";
 import { cn, formatPrice } from "@/lib/utils";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { type Configuration } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 
@@ -24,11 +26,13 @@ type DesignPreviewProps = {
 export const DesignPreview: React.FC<DesignPreviewProps> = ({ config }) => {
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useKindeBrowserClient();
 
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [suprise, setSuprise] = useState(false);
   useEffect(() => setSuprise(true), []);
 
-  const { color, model, finish, material } = config;
+  const { id: configId, color, model, finish, material } = config;
   const tw = COLORS.find((c) => c.value === color)?.tw;
   const { label: modelLabel } = MODELS.options.find(
     ({ value }) => value === model,
@@ -58,6 +62,17 @@ export const DesignPreview: React.FC<DesignPreviewProps> = ({ config }) => {
     },
   });
 
+  function handleCheckout() {
+    if (user) {
+      //create payment session
+      createPaymentSession({ configId });
+    } else {
+      // need to log in
+      localStorage.setItem("configId", configId);
+      setIsLoginModalOpen(true);
+    }
+  }
+
   return (
     <>
       <div
@@ -66,6 +81,9 @@ export const DesignPreview: React.FC<DesignPreviewProps> = ({ config }) => {
       >
         <Confetti active={suprise} config={{ elementCount: 200, spread: 90 }} />
       </div>
+
+      <LoginModal isOpen={isLoginModalOpen} setIsOpen={setIsLoginModalOpen} />
+
       <div className="mt-20 flex flex-col items-center text-sm sm:grid-cols-12 sm:grid-rows-1 sm:gap-x-6 md:grid md:gap-x-8 lg:gap-x-12">
         <div className="sm:col-span-4 md:col-span-3 md:row-span-2 md:row-end-2">
           <Phone className={cn(`bg-${tw}`)} imgSrc={config.croppedImageUrl!} />
@@ -141,7 +159,7 @@ export const DesignPreview: React.FC<DesignPreviewProps> = ({ config }) => {
                 className="px-4 sm:px-6 lg:px-8"
                 isLoading={isPending}
                 disabled={isPending}
-                onClick={() => createPaymentSession({ configId: config.id })}
+                onClick={() => handleCheckout()}
               >
                 Check out <ArrowRightIcon className="ml-1.5 inline h-4 w-4" />
               </Button>
