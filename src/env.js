@@ -14,6 +14,7 @@ export const env = createEnv({
       .default("development"),
     ADMIN_EMAIL: z.string().email(),
     STRIPE_SECRET_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
   },
 
   /**
@@ -35,6 +36,7 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     ADMIN_EMAIL: process.env.ADMIN_EMAIL,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     NEXT_PUBLIC_SERVER_URL: process.env.NEXT_PUBLIC_SERVER_URL,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
